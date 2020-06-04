@@ -1,5 +1,1 @@
-os
-requests
-json
-datetime
-dotenv
+discord.py==1.3.1
