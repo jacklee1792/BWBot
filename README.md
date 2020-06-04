@@ -8,7 +8,10 @@ Clone the repository:
 ```
 git clone https://github.com/jacklee1792/BWBot
 ```
-
+Install required modules
+```
+pip install requirements.txt
+```
 Follow the [following instructions](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to
 set up a bot on your Discord server, then create a `.env` file in the directory of `bwbot.py` with the following contents,
 ```
