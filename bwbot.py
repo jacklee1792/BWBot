@@ -8,15 +8,16 @@ from discord.ext import commands
 
 dotenv.load_dotenv()
 
-TOKEN = os.environ.get("discord-bot-token")
 API_KEY = os.environ.get("hypixel-api-key")
-
+TOKEN = os.environ.get("discord-bot-token")
 bot = commands.Bot(command_prefix='!')
 
+item_cnt = 5
 last_time = datetime.datetime.now()
-
+menu_items = ['STARS', 'IGN', 'FKDR', 'WR', 'WS']
+longest = []
 def stats_string(username):
-
+	global longest_star, longest_username, longest_fkdr, longest_winrate, longest_winstreak
 	username_is_valid = None
 
 	# Get the uuid of username
@@ -31,7 +32,6 @@ def stats_string(username):
 	except:
 		username_is_valid = False
 		username_string = username
-
 	# Get the stats
 	api_json = None
 	try:
@@ -54,7 +54,7 @@ def stats_string(username):
 		final_kills = int(api_json['player']['stats']['Bedwars']['final_kills_bedwars'])
 		final_deaths = int(api_json['player']['stats']['Bedwars']['final_deaths_bedwars'])
 		fkdr = final_kills / final_deaths
-		fkdr_string += f'{fkdr:.4f}'
+		fkdr_string += f'{fkdr:.2f}'
 		fkdr_string += f'({final_kills}/{final_deaths})'
 	except:
 		fkdr_string += '?'
@@ -76,22 +76,29 @@ def stats_string(username):
 		winstreak_string += str(winstreak)
 	except:
 		winstreak_string += '?'
-
-	ret = ''
-	ret += stars_string.rjust(7) + ' ‖ '
-	ret += username_string.ljust(17) + ' ‖ '
-	ret += fkdr_string.ljust(22) + ' ‖ '
-	ret += winrate_string.ljust(7) + ' ‖ '
-	ret += winstreak_string.ljust(6) + '\n'
-
+	ret = []
+	ret.append(stars_string)
+	ret.append(username_string)
+	ret.append(fkdr_string)
+	ret.append(winrate_string)
+	ret.append(winstreak_string)
+	for i in range(item_cnt):
+		longest[i] = max(longest[i], len(ret[i]) + 2)
 	return ret
 
 # Stats command
 @bot.command(name='stats')
 async def stats(ctx, *username_args):
 	# Impose 6 argument limit
+	global longest
+	longest = [7, 6, 6, 4, 4]
+	print(f"New Stats Query from {ctx.author}")
 	if len(username_args) > 6:
-		return await ctx.send('Too many arguments! Maximum number of arguments is 6.')
+		await ctx.send(ctx.message.author.mention)
+		return await ctx.send('Too many arguments! Please input between 1 and 6 usernames')
+	elif len(username_args) == 0:
+		await ctx.send(ctx.message.author.mention)
+		return await ctx.send('Too few arguments! Please input a number between 1 and 6 usernames')
 	# Check if sufficient time has passed since last query
 	global last_time
 	current_time = datetime.datetime.now()
@@ -101,12 +108,41 @@ async def stats(ctx, *username_args):
 		return await ctx.send(f'Please wait {3.5 - delta_seconds:.2f}s before sending another query!')
 	last_time = current_time
 	# Output stats table
-	output = '```c\n'
-	output += '        ‖ USERNAME          ‖ FKDR                   ‖ WR      ‖ WS   \n'
-	output += '========‖===================‖========================‖=========‖======\n'
+	output = '```py\n#  '
+	# Fetch results
+	results = []
 	for username in username_args:
-		output += stats_string(username)
-	output += '```\n'
+		results.append(stats_string(username))
+	# add menu items to output
+	for item_idx in range(item_cnt):
+		output += menu_items[item_idx].ljust(longest[item_idx])
+	output += '\n'
+	# add each query's result to output
+	splitter = ''
+	for idx in range(len(results)):
+		current_string = f'{idx + 1}. '
+		for item_idx in range(item_cnt):
+			current_string += results[idx][item_idx].ljust(longest[item_idx])
+		current_string += '\n'
+		splitter = '—' * len(current_string) + '\n'
+		output += splitter
+		output += current_string
+	output += splitter +  '```\n'
+	await ctx.send(ctx.message.author.mention)
 	return await ctx.send(output)
 
-bot.run(TOKEN)
+# only admin accessible kill command
+@bot.command(name='kill')
+@commands.has_permissions(administrator=True)
+async def kill(ctx):
+	print(f"Shutting Down command from {ctx.author}")
+	await ctx.send("shutting down...")
+	await ctx.bot.logout()
+
+
+def main():
+	print("Bot Started! Waiting for Query...")
+	bot.run(TOKEN)
+
+if __name__ == '__main__':
+	main()
