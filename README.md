@@ -6,18 +6,17 @@ BWBot is a Discord bot written in Python 3 for querying Hypixel Bedwars stats.
 # Installation
 Clone the repository:
 ```
-git clone https://github.com/jacklee1792/bw-bot
+git clone https://github.com/jacklee1792/BWBot
 ```
 
 Follow the [following instructions](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to
 set up a bot on your Discord server, then create a `.env` file in the directory of `bwbot.py` with the following contents,
 ```
-discord-bot-token = (YOUR_BOT_TOKEN)
-hypixel-api-key = (YOUR_API_KEY)
+discord-bot-token = YOUR_BOT_TOKEN
+hypixel-api-key = YOUR_API_KEY
 ```
 
-where `(YOUR_BOT_TOKEN)` and `(YOUR_API_KEY)` are your bot token and Hypixel API key, respectively. Install additional dependencies
-as required.
+where `YOUR_BOT_TOKEN` and `YOUR_API_KEY` are your bot token and Hypixel API key, respectively. Install additional dependencies as required by `requirements.txt`.
 
 # Usage
 
