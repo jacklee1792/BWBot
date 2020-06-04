@@ -10,10 +10,9 @@ git clone https://github.com/jacklee1792/BWBot
 ```
 Install required modules
 ```
-pip install requirements.txt
+pip3 install requirements.txt
 ```
-Follow the [following instructions](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to
-set up a bot on your Discord server, then create a `.env` file in the directory of `bwbot.py` with the following contents,
+Follow the [following instructions](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) to set up a bot on your Discord server, then create a `.env` file in the directory of `bwbot.py` with the following contents,
 ```
 discord-bot-token = YOUR_BOT_TOKEN
 hypixel-api-key = YOUR_API_KEY
