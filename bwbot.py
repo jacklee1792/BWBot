@@ -9,7 +9,6 @@ from discord.ext import commands
 
 dotenv.load_dotenv()
 
-log = open("log.txt", "w+")
 # retrieve api keys and discord token
 API_KEY = os.environ.get("hypixel-api-key")
 TOKEN = os.environ.get("discord-bot-token")
