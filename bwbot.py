@@ -225,6 +225,7 @@ async def status(ctx, *username_arg):
 		# displays status as offline
 		embed.description = "Offline"
 	# return the embed
+	await ctx.send(ctx.message.author.mention)
 	return await ctx.send(embed=embed)
 
 
