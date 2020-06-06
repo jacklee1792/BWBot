@@ -1,5 +1,5 @@
 # BWBot
-BWBot is a Discord bot written in Python 3 for querying Hypixel Bedwars stats and many othe functions.
+BWBot is a Discord bot written in Python 3 for querying Hypixel Bedwars stats and many other functions.
 
 ![Screenshot](screenshot.png)
 
