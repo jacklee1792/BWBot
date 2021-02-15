@@ -1,9 +1,8 @@
 import os
-import requests
-import json
 import datetime
 import dotenv
 import discord
+import sqlite3
 
 from discord.ext import commands
 from bwbot.util.user import User
@@ -12,6 +11,7 @@ from bwbot.util import utils
 dotenv.load_dotenv()
 TOKEN = os.environ.get('discord-bot-token')
 bot = commands.Bot(command_prefix='pls ')
+
 
 @bot.command(name='bw')
 async def bw(ctx, *args):
@@ -30,17 +30,20 @@ async def bw(ctx, *args):
 		rows.append(row)
 	await ctx.send(utils.tabulate(rows))
 
+
 @bot.command(name='bg')
 async def bg(ctx, *args):
 	rows = []
-	header = 'TITLE IGN WR WS'.split()
+	header = 'TITLE,IGN,SOLO WR,2s WR,4s WR,WS'.split(',')
 	rows.append(header)
 	for arg in args:
 		user = User(arg)
 		row = [
 			f'[{"?" if user.bg_title is None else user.bg_title}]',
 			user.ign,
-			utils.ratio_str(user.bg_wins, user.bg_losses),
+			utils.ratio_str(user.bg_wins1, user.bg_losses1),
+			utils.ratio_str(user.bg_wins2, user.bg_losses2),
+			utils.ratio_str(user.bg_wins4, user.bg_losses4),
 			user.bg_winstreak
 		]
 		rows.append(row)

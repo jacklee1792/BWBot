@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+from ratelimit import limits
 
 class User:
     def __init__(self, ign):
@@ -19,7 +20,9 @@ class User:
             self.ign = ign
             self.uuid, self.stats = None, None
 
-    def _get(self, *args, ret_type=int):
+    @limits(calls=100, period=60)
+    def _get(self, path, ret_type=int):
+        args = path.split()
         cur = self.stats
         try:
             for arg in args:
@@ -33,39 +36,50 @@ class User:
 
     @property
     def bw_fkills(self):
-        return self._get(*'player stats Bedwars final_kills_bedwars'.split())
+        return self._get('player stats Bedwars final_kills_bedwars')
     @property
     def bw_fdeaths(self):
-        return self._get(*'player stats Bedwars final_deaths_bedwars'.split())
+        return self._get('player stats Bedwars final_deaths_bedwars')
     @property
     def bw_stars(self):
-        return self._get(*'player achievements bedwars_level'.split())
+        return self._get('player achievements bedwars_level')
     @property
     def bw_wins(self):
-        return self._get(*'player stats Bedwars wins_bedwars'.split())
+        return self._get('player stats Bedwars wins_bedwars')
     @property
     def bw_losses(self):
-        return self._get(*'player stats Bedwars losses_bedwars'.split())
+        return self._get('player stats Bedwars losses_bedwars')
     @property
     def bw_winstreak(self):
-        return self._get(*'player stats Bedwars winstreak'.split())
+        return self._get('player stats Bedwars winstreak')
 
     @property
-    def bg_wins(self):
-        return self._get(*'player stats Duels bridge_duel_wins'.split())
+    def bg_wins1(self):
+        return self._get('player stats Duels bridge_duel_wins')
     @property
-    def bg_losses(self):
-        return self._get(*'player stats Duels bridge_duel_losses'.split())
+    def bg_losses1(self):
+        return self._get('player stats Duels bridge_duel_losses')
+    @property
+    def bg_wins2(self):
+        return self._get('player stats Duels bridge_doubles_wins')
+    @property
+    def bg_losses2(self):
+        return self._get('player stats Duels bridge_doubles_losses')
+    @property
+    def bg_wins4(self):
+        return self._get('player stats Duels bridge_four_wins')
+    @property
+    def bg_losses4(self):
+        return self._get('player stats Duels bridge_four_losses')
     @property
     def bg_winstreak(self):
-        return self._get(*'player stats Duels current_bridge_winstreak'.split())
+        return self._get('player stats Duels current_bridge_winstreak')
     @property
     def bg_title(self):
-        titles = 'godlike grandmaster legend master ' \
-                 'diamond gold iron rookie'.split()
-        for title in titles:
-            qry = f'bridge_{title}_title_prestige'
-            lvl = self._get(*f'player stats Duels {qry}'.split())
+        titles = 'godlike grandmaster legend master diamond gold iron rookie'
+        for title in titles.split():
+            full_title = f'bridge_{title}_title_prestige'
+            lvl = self._get(f'player stats Duels {full_title}')
             if lvl is not None:
                 return f'{title.upper()} {lvl}'
         return None
