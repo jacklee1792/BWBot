@@ -5,8 +5,8 @@ import discord
 import sqlite3
 
 from discord.ext import commands
-from bwbot.util.user import User
-from bwbot.util import utils
+from util.user import User
+from util import utils
 
 dotenv.load_dotenv()
 TOKEN = os.environ.get('discord-bot-token')
